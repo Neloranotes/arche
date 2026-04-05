@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arche — Daily Stoic Wisdom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-deep:#1a1d23;
+  --bg-card:#22262e;
+  --bg-card-border:#2a2f38;
+  --text-primary:#f0ece4;
+  --text-secondary:#b8b2a6;
+  --text-muted:#7a7468;
+  --accent-sage:#7a8c6e;
+  --accent-gold:#c4a265;
+  --accent-gold-dim:#9a7d4e;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  background:var(--bg-deep);
+  color:var(--text-primary);
+  font-family:var(--sans);
+  font-weight:300;
+  line-height:1.7;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.35}
+.container{
+  position:relative;z-index:1;
+  max-width:720px;
+  margin:0 auto;
+  padding:80px 28px 60px;
+}
+/* Fade-in animations */
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+/* Header */
+.header{text-align:center;margin-bottom:64px}
+.site-name{
+  font-family:var(--serif);
+  font-size:2.4rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.site-name span{color:var(--accent-gold)}
+.header-date{
+  font-family:var(--sans);
+  font-size:.82rem;
+  font-weight:400;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+/* Quote section */
+.quote-section{text-align:center;margin-bottom:56px}
+.quote-label{
+  font-family:var(--sans);
+  font-size:.7rem;
+  font-weight:500;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--accent-sage);
+  margin-bottom:28px;
+}
+.quote-mark{
+  font-family:var(--serif);
+  font-size:4rem;
+  line-height:1;
+  color:var(--accent-gold-dim);
+  opacity:.5;
+  margin-bottom:-10px;
+  display:block;
+}
+.quote-text{
+  font-family:var(--serif);
+  font-size:1.65rem;
+  font-weight:400;
+  font-style:italic;
+  line-height:1.55;
+  color:var(--text-primary);
+  max-width:600px;
+  margin:0 auto 20px;
+}
+.quote-author{
+  font-family:var(--sans);
+  font-size:.8rem;
+  font-weight:400;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--accent-gold);
+}
+/* Divider */
+.divider{
+  text-align:center;
+  margin:48px 0;
+  color:var(--text-muted);
+  font-size:.85rem;
+  letter-spacing:.4em;
+  opacity:.5;
+}
+/* Reflection */
+.reflection-section{margin-bottom:56px}
+.section-label{
+  font-family:var(--sans);
+  font-size:.7rem;
+  font-weight:500;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--accent-sage);
+  margin-bottom:20px;
+  text-align:center;
+}
+.reflection-text{
+  font-family:var(--serif);
+  font-size:1.18rem;
+  font-weight:400;
+  line-height:1.75;
+  color:var(--text-secondary);
+  text-align:center;
+  max-width:580px;
+  margin:0 auto;
+}
+/* Fun fact card */
+.fact-card{
+  background:var(--bg-card);
+  border:1px solid var(--bg-card-border);
+  border-radius:12px;
+  padding:32px 36px;
+  margin-bottom:56px;
+}
+.fact-card .section-label{text-align:left;margin-bottom:14px}
+.fact-text{
+  font-family:var(--sans);
+  font-size:.92rem;
+  font-weight:300;
+  line-height:1.75;
+  color:var(--text-secondary);
+}
+/* Footer */
+.footer{
+  text-align:center;
+  padding-top:20px;
+  border-top:1px solid var(--bg-card-border);
+}
+.footer-latin{
+  font-family:var(--serif);
+  font-size:1rem;
+  font-style:italic;
+  color:var(--text-muted);
+  margin-bottom:4px;
+}
+.footer-translation{
+  font-family:var(--sans);
+  font-size:.72rem;
+  letter-spacing:.12em;
+  color:var(--text-muted);
+  opacity:.6;
+}
+/* Responsive */
+@media(max-width:600px){
+  .container{padding:52px 20px 40px}
+  .site-name{font-size:1.8rem}
+  .quote-text{font-size:1.35rem}
+  .quote-mark{font-size:3rem}
+  .reflection-text{font-size:1.05rem}
+  .fact-card{padding:24px 22px}
+}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="container">
+
+  <header class="header fade-in" style="transition-delay:.1s">
+    <div class="site-name">Arch<span>e</span></div>
+    <div class="header-date" id="dateDisplay"></div>
+  </header>
+
+  <section class="quote-section fade-in" style="transition-delay:.3s">
+    <div class="quote-label">Today's Wisdom</div>
+    <span class="quote-mark">&ldquo;</span>
+    <p class="quote-text" id="quoteText"></p>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </section>
+
+  <div class="divider fade-in" style="transition-delay:.5s">&mdash;&mdash; &#10022; &mdash;&mdash;</div>
+
+  <section class="reflection-section fade-in" style="transition-delay:.65s">
+    <div class="section-label">Daily Reflection</div>
+    <p class="reflection-text" id="reflectionText"></p>
+  </section>
+
+  <div class="divider fade-in" style="transition-delay:.8s">&mdash;&mdash; &#10022; &mdash;&mdash;</div>
+
+  <section class="fact-card fade-in" style="transition-delay:.95s">
+    <div class="section-label">Did You Know?</div>
+    <p class="fact-text" id="factText"></p>
+  </section>
+
+  <footer class="footer fade-in" style="transition-delay:1.1s">
+    <p class="footer-latin" id="footerLatin"></p>
+    <p class="footer-translation" id="footerTranslation"></p>
+  </footer>
+
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────
+const quotes = [
+  {text:"You have power over your mind — not outside events. Realize this, and you will find strength.",author:"Marcus Aurelius"},
+  {text:"The happiness of your life depends upon the quality of your thoughts.",author:"Marcus Aurelius"},
+  {text:"Waste no more time arguing about what a good man should be. Be one.",author:"Marcus Aurelius"},
+  {text:"Very little is needed to make a happy life; it is all within yourself, in your way of thinking.",author:"Marcus Aurelius"},
+  {text:"The soul becomes dyed with the colour of its thoughts.",author:"Marcus Aurelius"},
+  {text:"Accept the things to which fate binds you, and love the people with whom fate brings you together, and do so with all your heart.",author:"Marcus Aurelius"},
+  {text:"When you arise in the morning, think of what a precious privilege it is to be alive — to breathe, to think, to enjoy, to love.",author:"Marcus Aurelius"},
+  {text:"The best revenge is not to be like your enemy.",author:"Marcus Aurelius"},
+  {text:"It is not death that a man should fear, but he should fear never beginning to live.",author:"Marcus Aurelius"},
+  {text:"Never esteem anything as of advantage to you that will make you break your word or lose your self-respect.",author:"Marcus Aurelius"},
+  {text:"The object of life is not to be on the side of the majority, but to escape finding oneself in the ranks of the insane.",author:"Marcus Aurelius"},
+  {text:"Look back over the past, with its changing empires that rose and fell, and you can foresee the future too.",author:"Marcus Aurelius"},
+  {text:"He who lives in harmony with himself lives in harmony with the universe.",author:"Marcus Aurelius"},
+  {text:"Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",author:"Marcus Aurelius"},
+  {text:"How much more grievous are the consequences of anger than the causes of it.",author:"Marcus Aurelius"},
+  {text:"We suffer more often in imagination than in reality.",author:"Seneca"},
+  {text:"It is not that we have a short time to live, but that we waste a great deal of it.",author:"Seneca"},
+  {text:"Luck is what happens when preparation meets opportunity.",author:"Seneca"},
+  {text:"Difficulties strengthen the mind, as labor does the body.",author:"Seneca"},
+  {text:"As is a tale, so is life: not how long it is, but how good it is, is what matters.",author:"Seneca"},
+  {text:"We are more often frightened than hurt; and we suffer more in imagination than in reality.",author:"Seneca"},
+  {text:"True happiness is to enjoy the present, without anxious dependence upon the future.",author:"Seneca"},
+  {text:"It is a rough road that leads to the heights of greatness.",author:"Seneca"},
+  {text:"He who is brave is free.",author:"Seneca"},
+  {text:"While we are postponing, life speeds by.",author:"Seneca"},
+  {text:"The whole future lies in uncertainty: live immediately.",author:"Seneca"},
+  {text:"A gem cannot be polished without friction, nor a man perfected without trials.",author:"Seneca"},
+  {text:"No man is free who is not master of himself.",author:"Epictetus"},
+  {text:"It's not what happens to you, but how you react to it that matters.",author:"Epictetus"},
+  {text:"First say to yourself what you would be; and then do what you have to do.",author:"Epictetus"},
+  {text:"Man is not worried by real problems so much as by his imagined anxieties about real problems.",author:"Epictetus"},
+  {text:"Make the best use of what is in your power, and take the rest as it happens.",author:"Epictetus"},
+  {text:"Only the educated are free.",author:"Epictetus"},
+  {text:"Wealth consists not in having great possessions, but in having few wants.",author:"Epictetus"},
+  {text:"Don't explain your philosophy. Embody it.",author:"Epictetus"},
+  {text:"If you want to improve, be content to be thought foolish and stupid.",author:"Epictetus"},
+  {text:"Circumstances don't make the man, they only reveal him to himself.",author:"Epictetus"},
+  {text:"He is a wise man who does not grieve for the things which he has not, but rejoices for those which he has.",author:"Epictetus"},
+  {text:"Any person capable of angering you becomes your master; he can anger you only when you permit yourself to be disturbed by him.",author:"Epictetus"},
+  {text:"Freedom is the only worthy goal in life. It is won by disregarding things that lie beyond our control.",author:"Epictetus"},
+  {text:"I begin to speak only when I am certain what I will say is not better left unsaid.",author:"Cato the Elder"},
+  {text:"An angry man opens his mouth and shuts his eyes.",author:"Cato the Elder"},
+  {text:"Wise men learn more from fools than fools from the wise.",author:"Cato the Elder"},
+  {text:"Patience is the greatest of all virtues.",author:"Cato the Elder"},
+  {text:"Consider it the greatest of all virtues to restrain the tongue.",author:"Cato the Elder"},
+  {text:"We cannot control the evil tongues of others; but a good life enables us to disregard them.",author:"Cato the Elder"},
+  {text:"The best way to keep good acts in memory is to refresh them with new.",author:"Cato the Elder"},
+  {text:"Man is the head of the family, woman the neck that turns the head.",author:"Cato the Elder"},
+  {text:"Happiness and freedom begin with a clear understanding of one principle: some things are within our control, and some things are not.",author:"Epictetus"},
+  {text:"The mind that is anxious about future events is miserable.",author:"Seneca"},
+  {text:"Man conquers the world by conquering himself.",author:"Zeno of Citium"},
+  {text:"We have two ears and one mouth, so we should listen more than we speak.",author:"Zeno of Citium"},
+  {text:"The reason we have two ears and only one mouth is so that we may listen more and talk less.",author:"Zeno of Citium"},
+  {text:"Well-being is realized by small steps, but is truly no small thing.",author:"Zeno of Citium"},
+  {text:"No loss should be more regrettable to us than losing our time, for it is irretrievable.",author:"Zeno of Citium"},
+  {text:"The goal of life is living in agreement with Nature.",author:"Zeno of Citium"},
+  {text:"Steel your sensibilities, so that life shall hurt you as little as possible.",author:"Zeno of Citium"},
+  {text:"Nothing is more hostile to a firm grasp on knowledge than self-deception.",author:"Chrysippus"},
+  {text:"The universe itself is God and the universal outpouring of its soul.",author:"Chrysippus"},
+  {text:"Vice may be learnt, even without a teacher.",author:"Chrysippus"},
+  {text:"If I had followed the multitude, I should not have studied philosophy.",author:"Chrysippus"},
+  {text:"There could be no justice unless there were also injustice; no courage unless there were cowardice; no truth unless there were falsehood.",author:"Chrysippus"},
+  {text:"It does not matter what you bear, but how you bear it.",author:"Seneca"},
+  {text:"Begin at once to live, and count each separate day as a separate life.",author:"Seneca"},
+  {text:"Sometimes even to live is an act of courage.",author:"Seneca"},
+];
+
+const reflections = [
+  "What is one thing today that lies completely outside your control — and can you release your grip on it? Leadership begins when you stop spending energy on what you cannot change and redirect it toward what you can.",
+  "Before your first meeting today, ask yourself: am I reacting to the world, or am I choosing how to engage with it? The Stoics taught that the space between stimulus and response is where character lives.",
+  "Consider the decisions weighing on you right now. Which ones are you delaying because of fear, not because of incomplete information? Clarity often comes not from more data, but from more courage.",
+  "Today, someone on your team will fall short of expectations. Before you respond, ask: what would the wisest version of myself do in this moment? Your reaction will teach your team more than any policy ever could.",
+  "What story are you telling yourself about the obstacle you're facing? The Stoics believed that our judgments — not events — create our suffering. Rewrite the story, and you may rewrite the outcome.",
+  "If you could only accomplish one thing today, what would it be? Strip away the noise of urgency and find the single thread of true importance. Pull that thread.",
+  "Think about a recent failure. Now ask: what did it reveal about my character that success had been hiding? Growth lives not in the victory, but in what the defeat made visible.",
+  "Who on your team needs to hear that they matter today? A leader's attention is the most powerful currency. Spend it on someone who has been quietly excellent.",
+  "Imagine yourself at the end of this year, looking back. What decision made today will you be most proud of? Act from that future self now.",
+  "Uncertainty is the landscape you lead in. Rather than fighting it, can you practice being comfortable with not knowing? The Stoics called this the art of assent — agreeing only to what is true, and suspending judgment on what is not yet clear.",
+  "What would you do differently today if you knew no one was watching? That gap — between your public actions and your private instincts — is the exact measure of your integrity.",
+  "Today, practice the discipline of subtraction. What meeting, commitment, or habit can you remove? Often the most powerful leadership move is not adding more, but clearing the way.",
+  "How are you handling the tension between speed and wisdom? A company in motion values velocity, but a Stoic leader knows that pausing to think clearly is not the same as standing still.",
+  "Consider something you are anxious about. Now separate the event from your judgment of it. The event is neutral. Your interpretation creates the anxiety. Can you find a truer interpretation?",
+  "The people around you are mirrors. If you see frustration, check yourself for impatience. If you see fear, check yourself for uncertainty you haven't addressed. What is your team reflecting back to you today?",
+  "Marcus Aurelius led an empire while journaling about humility. Today, ask yourself: does my power make me more humble, or less? The answer matters more than any quarterly target.",
+  "What hard conversation are you avoiding? The Stoics believed that discomfort in service of virtue is not suffering — it is duty. The conversation you dread may be the one that sets someone free.",
+  "Imagine losing everything you have built. What would remain? That irreducible core — your character, your principles, your ability to begin again — is your true wealth. Lead from that place today.",
+  "Are you making decisions from abundance or from scarcity? Fear-based leadership builds fragile systems. Trust-based leadership builds antifragile ones. Notice which mode you default to.",
+  "Today, practice amor fati — love of fate. Whatever comes, meet it not with resignation but with wholehearted acceptance. The obstacle is not in your way. It is the way.",
+  "Before you react to bad news today, take one full breath. In that breath lives the difference between a leader who is controlled by events and one who shapes them.",
+  "Seneca wrote letters of wisdom while serving in one of the most volatile courts in history. You too can find clarity amid chaos. What truth are you avoiding because it is inconvenient?",
+  "Think about the last time you changed your mind about something important. If you cannot remember, it may be time to examine whether your certainty is serving you — or trapping you.",
+  "Your energy is finite. Today, before saying yes to anything, ask: does this serve the mission, or does it serve my need to be needed? One builds the company. The other builds dependency.",
+  "What would Epictetus say about your calendar this week? Is it filled with things within your control, or are you spending your time managing other people's chaos? Reclaim your agenda.",
+  "A ship in harbor is safe, but that is not what ships are built for. What safe harbor are you lingering in that is keeping you from the voyage your company needs?",
+  "Today, practice leading with questions instead of answers. The Stoic teacher Socrates knew that a well-placed question opens more doors than the most eloquent declaration.",
+  "Notice the moments today when your ego wants to take credit. Then notice the moments when it wants to deflect blame. Both impulses come from the same place — and neither serves your team.",
+  "The Stoics believed that every person you meet is fighting a battle you know nothing about. Carry that awareness into every interaction today. It will make you not just a better leader, but a better human.",
+  "What part of your role feels heaviest right now? Now ask: is the weight real, or have I been carrying someone else's burden? Boundaries are not selfish — they are the architecture of sustainable leadership.",
+  "Epictetus was born a slave and became one of the greatest teachers in history. Your circumstances do not define your capacity. What limiting belief about your situation is it time to release?",
+  "How do you treat the person who can do nothing for you? That answer reveals more about your character than any board presentation ever will.",
+  "If you were advising a friend facing your exact situation, what would you tell them? Now take your own advice. We are often wiser for others than we are for ourselves.",
+  "The Stoics practiced negative visualization — imagining the worst — not to be pessimistic, but to be prepared and grateful. What is the worst that could happen today? And could you handle it? You probably can.",
+  "Who have you not thanked recently? Gratitude is not a soft skill. It is the bedrock of loyalty, culture, and resilience. Send that message today.",
+  "Are you building something that would work without you? The ultimate test of leadership is not what happens when you are present, but what happens when you are not.",
+  "Chrysippus taught that virtue is the only true good. Today, when faced with a tradeoff between profit and principle, notice which way you lean. Your instinct in that moment is your real strategy.",
+  "What have you been tolerating that you should have addressed weeks ago? Tolerance of mediocrity is not kindness — it is avoidance. Address it today with compassion and clarity.",
+  "Remember: you are not managing a company. You are shaping a culture. Every word you speak, every decision you make, every reaction you have is a cultural signal. What signal are you sending today?",
+  "Zeno taught that we should live in agreement with nature. For a leader, that means aligning your actions with reality, not with how you wish things were. What reality are you resisting?",
+  "Today, practice deliberate stillness. Not because there is nothing to do, but because the most important things become visible only when you stop moving long enough to see them.",
+  "The ancient Stoics held evening reviews — reflecting on what went well, what did not, and what could be done better. Tonight, give yourself five minutes of honest reflection. It will compound.",
+  "What decision are you overthinking? Seneca would remind you that a good plan executed today is better than a perfect plan that never arrives. Decide, and then make the decision right.",
+  "Consider the legacy you want to leave — not the company legacy, but the human one. What do you want the people you lead to say about how you made them feel? Lead toward that answer today.",
+  "Your team does not need a perfect leader. They need an honest one. What truth have you been polishing into a comfortable half-truth? Real trust begins where comfortable narratives end.",
+  "Marcus Aurelius faced plagues, wars, and betrayal — and still chose compassion. Your challenges today are real, but they are also navigable. What would it look like to face them with grace?",
+  "Every yes is a no to something else. Before committing to anything today, ask: what am I saying no to by saying yes to this? The invisible tradeoffs are where strategy actually lives.",
+  "The Stoics did not seek to eliminate emotion — they sought to understand it. What emotion has been driving your decisions lately? Name it, examine it, and choose whether to follow it.",
+  "You will make a mistake today. That is not a prediction of failure — it is an acknowledgment of humanity. The question is not whether you will stumble, but how quickly you will learn.",
+  "Think about the person you find most difficult to work with. Now consider: what are they teaching you about yourself? Every friction is a mirror if you are willing to look.",
+  "The Stoics believed in cosmopolitanism — that we are all citizens of the world. Today, make a decision that serves not just your company, but the wider community. Greatness is never achieved in isolation.",
+  "What would you do today if you were not afraid of being judged? Fear of judgment is the invisible fence around most leaders. Step outside it, even briefly, and notice what becomes possible.",
+  "Seneca said that the greatest obstacle to living is expectancy, which hangs upon tomorrow and loses today. Release your expectations for how today should go, and engage fully with how it is.",
+  "Ask yourself: am I leading this company, or is this company leading me? If you have lost the steering wheel, today is the day to take it back — one deliberate choice at a time.",
+  "What principle are you unwilling to compromise on, no matter the cost? If you cannot name it instantly, you may not have one — and a leader without a principle is a ship without a rudder.",
+  "The Stoic concept of sympatheia reminds us that everything is connected. Your mood sets the tone. Your clarity creates space. Your courage gives permission. What are you radiating into your organization today?",
+  "Before the day begins, remember: you chose this path. Not because it is easy, but because it matters. Let that original spark of purpose fuel you through whatever comes.",
+  "Cato walked barefoot through Rome to practice discomfort. You do not need to go barefoot — but today, lean into one discomfort you have been avoiding. That is where your next level of growth lives.",
+  "The most powerful question a leader can ask is not 'what should we do?' but 'what are we not seeing?' Today, seek the blind spots. They are where both the greatest risks and greatest opportunities hide.",
+  "Remember that stillness and laziness are not the same thing. The Stoic leader is calm, not passive. Be still enough to see clearly, then act with decisive purpose.",
+  "Epictetus taught that we are disturbed not by things but by the views we take of them. Today, find one situation you have been viewing as a crisis and ask: could this also be an opportunity?",
+  "Your attention is the scarcest resource in your company. Today, be ruthless about where you direct it. The things that shout loudest are rarely the things that matter most.",
+  "What would your mentor tell you right now if they could see everything you are dealing with? Sometimes the wisest voice is the one we already carry within us — we just need to be quiet enough to hear it.",
+  "The ancient Stoics began each day with a premeditation of challenges. Not to worry, but to prepare. What is the hardest thing you might face today, and how will you meet it with virtue?",
+  "Today, lead with curiosity instead of certainty. Ask one more question before giving your answer. Listen one beat longer before responding. The world opens up when we stop pretending to have all the answers.",
+];
+
+const facts = [
+  "Marcus Aurelius never intended his 'Meditations' to be published. They were private journal entries he wrote to himself during military campaigns — essentially a personal self-help diary from the most powerful man in the world.",
+  "Epictetus was born into slavery and spent his youth as a slave in Rome. His master eventually allowed him to study Stoic philosophy, and after being freed, he became one of the most influential teachers in history.",
+  "Seneca was one of the wealthiest men in the Roman Empire while simultaneously writing about the virtues of simple living. This paradox has been debated by philosophers for two thousand years.",
+  "Zeno of Citium, the founder of Stoicism, began studying philosophy after a shipwreck destroyed his merchandise. He later said it was the best thing that ever happened to him.",
+  "The word 'stoic' comes from the Stoa Poikile, or 'Painted Porch,' in Athens where Zeno first taught. Stoicism literally means 'philosophy of the porch.'",
+  "Chrysippus reportedly wrote over 700 works, making him one of the most prolific writers of the ancient world. Tragically, almost none of them survived to the present day.",
+  "Marcus Aurelius ruled during a devastating plague that killed up to five million people across the Roman Empire. His Stoic training helped him lead through one of history's greatest crises.",
+  "Seneca served as tutor and later advisor to the Emperor Nero — one of Rome's most infamous rulers. He tried to moderate Nero's worst impulses, with mixed success.",
+  "Epictetus taught that philosophy should be practiced, not just studied. He compared people who only read philosophy to sheep who show the shepherd the grass rather than producing wool.",
+  "The Stoics were among the first philosophers to argue for the fundamental equality of all human beings — including slaves and women — at a time when such ideas were revolutionary.",
+  "Cato the Younger was so committed to his principles that he chose death rather than live under what he saw as Caesar's tyranny. His defiance made him a symbol of republican virtue for centuries.",
+  "Marcus Aurelius voluntarily shared power with his adopted brother Lucius Verus, creating a dual emperorship — something almost unheard of in Roman history.",
+  "Seneca's 'Letters to Lucilius' were written as personal correspondence but have become one of the most widely read works of practical philosophy in Western history.",
+  "Chrysippus was known for his sharp logical mind. He developed propositional logic centuries before it became a formal discipline, influencing mathematics to this day.",
+  "The Stoics believed the universe operates through logos — a rational principle that governs all of nature. This idea deeply influenced early Christian theology.",
+  "Zeno of Citium was originally a merchant trading in purple dye from Phoenicia before his philosophical awakening. He gave up a lucrative trade for a life of wisdom.",
+  "Epictetus's teachings were recorded by his student Arrian, much like Socrates' teachings were recorded by Plato. Epictetus himself never wrote anything down.",
+  "Marcus Aurelius spent nearly half of his reign on military campaigns along the Danube frontier, writing his philosophical reflections by candlelight in his tent.",
+  "Seneca wrote nine tragedies that heavily influenced Renaissance drama, including Shakespeare. His dramatic works explored the same themes of passion and virtue as his philosophy.",
+  "The Stoic practice of premeditatio malorum — imagining worst-case scenarios — is remarkably similar to modern cognitive behavioral therapy techniques developed in the 20th century.",
+  "Chrysippus allegedly died from laughing too hard after watching a donkey eat his figs. While likely apocryphal, it's one of the most memorable death stories in philosophy.",
+  "The Roman Emperor Hadrian's wall in Britain was partially inspired by Stoic ideas about boundaries and the limits of control — knowing where your domain ends.",
+  "Stoicism was the dominant philosophy of the Roman elite for nearly five centuries, from roughly 300 BCE to 200 CE, shaping law, politics, and governance.",
+  "Epictetus used a broken leg (injured during his time as a slave) as a teaching example about accepting things beyond one's control for the rest of his life.",
+  "Seneca was exiled to Corsica for eight years on charges that were likely politically motivated. He used the time to write some of his most important philosophical works.",
+  "The Stoic concept of cosmopolitanism — being a citizen of the world — directly influenced Enlightenment thinkers and the development of modern human rights frameworks.",
+  "Marcus Aurelius sold imperial furnishings and his wife's silk and gold clothing to fund the Roman military rather than raising taxes during a time of crisis.",
+  "Zeno's original Stoic school in Athens was open to anyone, regardless of social status — an unusual policy in a society built on rigid class distinctions.",
+  "The Stoics developed one of the earliest theories of natural law — the idea that certain moral principles are universal and discoverable through reason alone.",
+  "Cato the Elder is famous for ending every speech in the Roman Senate with 'Carthago delenda est' — 'Carthage must be destroyed' — regardless of the topic being discussed.",
+  "Seneca's essay 'On the Shortness of Life' argues that life is long enough if you spend it wisely — a message that has resonated with readers for over two thousand years.",
+  "The Stoics were early proponents of what we now call mindfulness — paying careful attention to one's thoughts, judgments, and reactions in real time.",
+  "Chrysippus's contributions to logic were so significant that ancient sources claimed he and Zeno together advanced human reasoning more than anyone before them.",
+  "Marcus Aurelius adopted the practice of writing down things he was grateful for — a habit that modern psychology has confirmed improves well-being and resilience.",
+  "Epictetus' school in Nicopolis attracted students from across the Roman world, including senators and future advisors to emperors, despite his humble origins.",
+  "The Stoic practice of the 'view from above' — imagining yourself looking down on Earth from a great height — was designed to put daily worries into cosmic perspective.",
+  "Seneca was recalled from exile specifically to tutor the young Nero, beginning one of history's most dramatic philosopher-ruler relationships.",
+  "The Roman legal concept of 'natural rights' — rights inherent to all people — owes a significant debt to Stoic philosophy about universal human dignity.",
+  "Zeno reportedly said that the reason humans have two ears and one mouth is so they can listen twice as much as they speak — advice that remains remarkably relevant.",
+  "The Stoics practiced voluntary discomfort — cold baths, simple meals, rough clothing — not as punishment, but as training to reduce dependence on luxury and comfort.",
+  "Marcus Aurelius's personal physician was Galen, one of the most important medical figures in history, whose works influenced medicine for over a thousand years.",
+  "Chrysippus argued that even negative emotions serve a purpose when properly understood — a view that anticipates modern psychology's understanding of emotional intelligence.",
+  "The Stoic idea of 'preferred indifferents' — things like health and wealth that are nice to have but not essential for a good life — was a radical philosophical innovation.",
+  "Seneca's wealth was estimated at 300 million sesterces, making him one of the richest people in the ancient world. He wrote extensively about the dangers of attachment to wealth.",
+  "Epictetus was one of the first philosophers to describe what we now call the 'locus of control' — the distinction between what we can and cannot influence.",
+  "The word 'apathy' originally comes from the Stoic concept of apatheia, which did not mean indifference but freedom from destructive passions — a very different meaning.",
+  "Cato the Younger reportedly read Plato's dialogue on the immortality of the soul twice on his final night, finding philosophical comfort in his last hours.",
+  "The Stoics believed in a cyclical universe that would eventually be consumed by fire and reborn — an idea that has fascinating parallels with modern cosmological theories.",
+  "Marcus Aurelius's 'Meditations' was nearly lost to history and survived through a single manuscript chain. The world's most famous journal almost disappeared entirely.",
+  "Seneca wrote 'On Anger,' one of the most comprehensive ancient treatises on managing rage, which describes techniques nearly identical to modern anger management therapy.",
+  "The Stoic school outlasted almost every other ancient philosophical school, influencing thinkers from early Christians to Renaissance humanists to modern psychologists.",
+  "Zeno of Citium studied under the Cynic philosopher Crates, who tried to cure Zeno's shyness by making him carry a pot of lentil soup through Athens until it broke.",
+  "Chrysippus's logical system included the first known formal treatment of what we now call conditional statements — if-then reasoning that underlies all of modern programming.",
+  "The Stoic concept of memento mori — remembering that you will die — was not morbid but was intended as the most powerful motivator for living fully in the present.",
+  "Epictetus taught that we should treat life like a banquet: enjoy what is served to you, but don't grasp for dishes that have passed or haven't yet arrived.",
+  "Marcus Aurelius was the last of the 'Five Good Emperors' of Rome — a dynasty that oversaw one of the most peaceful and prosperous periods in Roman history.",
+  "Seneca conducted early scientific investigations into earthquakes, weather, and natural phenomena, writing 'Natural Questions' — one of the earliest encyclopedias of earth science.",
+  "The Stoics developed the concept of 'oikeiosis' — a natural affinity that begins with self-preservation and expands outward to family, community, and all of humanity.",
+  "Ancient Stoic teachers used a technique called 'fieldwork' — sending students into marketplaces and public spaces to practice their philosophical skills in real-world situations.",
+  "The journal format of Marcus Aurelius's 'Meditations' has inspired countless leaders throughout history, from Frederick the Great to Bill Clinton, to maintain their own reflection journals.",
+  "Stoic philosophy experienced a major revival in the 21st century, becoming one of the fastest-growing philosophical movements in the modern world through books, podcasts, and online communities.",
+  "The Stoics were among the first to develop a systematic ethics based on reason rather than mythology or religious authority, paving the way for secular moral philosophy.",
+  "Seneca was nearly executed alongside his nephew, the poet Lucan, in the Pisonian conspiracy against Nero. His forced suicide was carried out with philosophical composure.",
+  "The Stoic daily practice of journaling and self-examination has been adopted by Silicon Valley executives, military leaders, and professional athletes as a performance tool.",
+];
+
+const latinPhrases = [
+  {latin:"Amor fati",translation:"Love of fate"},
+  {latin:"Memento mori",translation:"Remember that you will die"},
+  {latin:"Premeditatio malorum",translation:"The premeditation of adversity"},
+  {latin:"Summum bonum",translation:"The highest good"},
+  {latin:"Virtus sola nobilitat",translation:"Virtue alone ennobles"},
+  {latin:"Per aspera ad astra",translation:"Through hardship to the stars"},
+  {latin:"Sustine et abstine",translation:"Bear and forbear"},
+  {latin:"Ducunt volentem fata, nolentem trahunt",translation:"Fate leads the willing and drags the unwilling"},
+  {latin:"Vivere militare est",translation:"To live is to fight"},
+  {latin:"Non scholae sed vitae discimus",translation:"We learn not for school but for life"},
+  {latin:"Carpe diem",translation:"Seize the day"},
+  {latin:"Tempus fugit",translation:"Time flies"},
+  {latin:"Cogito ergo sum",translation:"I think, therefore I am"},
+  {latin:"Ars longa, vita brevis",translation:"Art is long, life is short"},
+  {latin:"Festina lente",translation:"Make haste slowly"},
+  {latin:"Fortis fortuna adiuvat",translation:"Fortune favours the bold"},
+  {latin:"Nil desperandum",translation:"Never despair"},
+  {latin:"Ad astra per aspera",translation:"To the stars through difficulties"},
+  {latin:"Sapere aude",translation:"Dare to be wise"},
+  {latin:"Vincit qui se vincit",translation:"He conquers who conquers himself"},
+  {latin:"Veritas lux mea",translation:"Truth is my light"},
+  {latin:"In omnia paratus",translation:"Ready for all things"},
+  {latin:"Acta non verba",translation:"Deeds, not words"},
+  {latin:"Dum spiro, spero",translation:"While I breathe, I hope"},
+  {latin:"Faber est suae quisque fortunae",translation:"Every man is the architect of his own fortune"},
+  {latin:"Sic itur ad astra",translation:"Thus one journeys to the stars"},
+  {latin:"Nosce te ipsum",translation:"Know thyself"},
+  {latin:"Esse quam videri",translation:"To be, rather than to seem"},
+  {latin:"Citius, altius, fortius",translation:"Faster, higher, stronger"},
+  {latin:"Labor omnia vincit",translation:"Hard work conquers all"},
+];
+
+// ─── DATE & INDEX LOGIC ───────────────────────────────
+function getDayOfYear(d){
+  const start=new Date(d.getFullYear(),0,0);
+  const diff=d-start;
+  return Math.floor(diff/86400000);
+}
+
+function getOrdinal(n){
+  const s=["th","st","nd","rd"];
+  const v=n%100;
+  return n+(s[(v-20)%10]||s[v]||s[0]);
+}
+
+function formatDate(d){
+  const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  return `${days[d.getDay()]}, the ${getOrdinal(d.getDate())} of ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function seededIndex(dayOfYear,year,len){
+  const seed=dayOfYear+year*367;
+  return ((seed*2654435761)>>>0)%len;
+}
+
+// ─── RENDER ───────────────────────────────────────────
+const now=new Date();
+const doy=getDayOfYear(now);
+const yr=now.getFullYear();
+
+document.getElementById("dateDisplay").textContent=formatDate(now);
+
+const qi=seededIndex(doy,yr,quotes.length);
+document.getElementById("quoteText").textContent=quotes[qi].text;
+document.getElementById("quoteAuthor").textContent="— "+quotes[qi].author;
+
+document.getElementById("reflectionText").textContent=reflections[seededIndex(doy+7,yr,reflections.length)];
+document.getElementById("factText").textContent=facts[seededIndex(doy+13,yr,facts.length)];
+
+const li=seededIndex(doy+19,yr,latinPhrases.length);
+document.getElementById("footerLatin").textContent=latinPhrases[li].latin;
+document.getElementById("footerTranslation").textContent=latinPhrases[li].translation;
+
+// ─── FADE-IN ──────────────────────────────────────────
+requestAnimationFrame(()=>{
+  document.querySelectorAll('.fade-in').forEach(el=>{
+    setTimeout(()=>el.classList.add('visible'),50);
+  });
+});
+
+// ─── PARTICLES ────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('particles');
+  const ctx=canvas.getContext('2d');
+  let w,h,particles=[];
+  const COUNT=45;
+
+  function resize(){
+    w=canvas.width=window.innerWidth;
+    h=canvas.height=window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  for(let i=0;i<COUNT;i++){
+    particles.push({
+      x:Math.random()*w,
+      y:Math.random()*h,
+      r:Math.random()*1.8+.4,
+      dx:(Math.random()-.5)*.15,
+      dy:(Math.random()-.5)*.12,
+      o:Math.random()*.35+.08
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of particles){
+      p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;
+      if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(196,162,101,${p.o})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
