@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ My Investment Portfolio ✦</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --moonlight-1: #B8D4E8;
+  --moonlight-2: #7BA7C7;
+  --moonlight-3: #D4E8F0;
+  --cream-1: #FAF6EE;
+  --cream-2: #F5EDDA;
+  --gold-1: #D4AF6A;
+  --gold-2: #C9963A;
+  --rose-1: #E8C4B8;
+  --rose-2: #D4A090;
+  --sage-1: #A8C4A0;
+  --sage-2: #8BAF82;
+  --navy-1: #1A2744;
+  --navy-2: #243356;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-accent: 'Dancing Script', cursive;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--navy-1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(184,212,232,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(212,175,106,0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(232,196,184,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 10% 80%, rgba(168,196,160,0.2) 0%, transparent 40%),
+    radial-gradient(ellipse at 90% 90%, rgba(184,212,232,0.25) 0%, transparent 45%),
+    linear-gradient(170deg, #FAF6EE 0%, #F5EDDA 30%, #FAF6EE 60%, #D4E8F0 100%);
+  background-attachment: fixed;
+}
+
+/* === SPARKLE PARTICLES === */
+.sparkle-container {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.sparkle {
+  position: absolute;
+  font-size: 14px;
+  opacity: 0;
+  animation: sparkleFloat linear infinite;
+  color: var(--gold-1);
+  text-shadow: 0 0 6px rgba(212,175,106,0.5);
+}
+@keyframes sparkleFloat {
+  0%   { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.5); }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(-100vh) rotate(360deg) scale(1.2); }
+}
+
+/* === LAYOUT === */
+.dashboard {
+  position: relative; z-index: 1;
+  max-width: 1320px; margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* === HEADER === */
+.header {
+  text-align: center;
+  padding: 40px 20px 30px;
+  position: relative;
+  margin-bottom: 32px;
+}
+.header::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 90%; max-width: 700px; height: 100%;
+  background: radial-gradient(ellipse, rgba(212,175,106,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.header h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--navy-1);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  animation: fadeSlideIn 1s ease-out;
+}
+.header h1 .star { color: var(--gold-1); }
+.header .subtitle {
+  font-family: var(--font-accent);
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: var(--moonlight-2);
+  margin-bottom: 12px;
+  animation: fadeSlideIn 1s ease-out 0.15s both;
+}
+.header .date-scroll {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--navy-2);
+  background: linear-gradient(135deg, var(--cream-2), var(--cream-1));
+  padding: 6px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(212,175,106,0.35);
+  box-shadow: 0 2px 8px rgba(26,39,68,0.06);
+  animation: fadeSlideIn 1s ease-out 0.3s both;
+}
+.header-actions {
+  position: absolute; top: 20px; right: 20px;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+.last-updated {
+  font-size: 0.72rem; color: var(--moonlight-2);
+  font-style: italic;
+}
+.refresh-btn {
+  font-family: var(--font-accent);
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--gold-1), var(--gold-2));
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 24px;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(201,150,58,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201,150,58,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.refresh-btn:active { transform: translateY(0); }
+.refresh-btn.loading { opacity: 0.7; pointer-events: none; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* === WARNING BANNER === */
+.warning-banner {
+  display: none;
+  background: linear-gradient(135deg, #FFF3CD, #FFEEBA);
+  border: 1px solid var(--gold-1);
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--navy-1);
+  animation: fadeSlideIn 0.5s ease-out;
+}
+.warning-banner.show { display: block; }
+
+/* === CARDS === */
+.card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.85), rgba(250,246,238,0.9));
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  border: 1px solid rgba(212,175,106,0.2);
+  box-shadow: 0 4px 20px rgba(26,39,68,0.06), 0 1px 4px rgba(212,175,106,0.1);
+  padding: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(26,39,68,0.1), 0 2px 8px rgba(212,175,106,0.15);
+}
+
+/* === SECTION TITLES === */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  color: var(--navy-1);
+  text-align: center;
+  margin: 48px 0 24px;
+  position: relative;
+}
+.section-title .accent {
+  font-family: var(--font-accent);
+  color: var(--gold-1);
+  font-size: 0.8em;
+}
+
+/* === SUMMARY CARDS === */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 16px;
+}
+.summary-card {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: fadeSlideIn 0.7s ease-out both;
+}
+.summary-card:nth-child(1) { animation-delay: 0.1s; }
+.summary-card:nth-child(2) { animation-delay: 0.2s; }
+.summary-card:nth-child(3) { animation-delay: 0.3s; }
+.summary-card:nth-child(4) { animation-delay: 0.4s; }
+.summary-card .icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+}
+.summary-card .label {
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  color: var(--moonlight-2);
+  margin-bottom: 4px;
+}
+.summary-card .value {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700;
+  color: var(--navy-1);
+}
+.summary-card .sub {
+  font-size: 0.75rem;
+  color: var(--rose-2);
+  margin-top: 4px;
+}
+.summary-card::after {
+  content: '✦';
+  position: absolute; top: 8px; right: 12px;
+  font-size: 0.7rem; color: var(--gold-1); opacity: 0.5;
+}
+@keyframes gentlePulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(26,39,68,0.06), 0 0 0 rgba(212,175,106,0); }
+  50% { box-shadow: 0 4px 20px rgba(26,39,68,0.06), 0 0 20px rgba(212,175,106,0.12); }
+}
+.summary-card.glow { animation: gentlePulse 3s ease-in-out infinite, fadeSlideIn 0.7s ease-out both; }
+
+/* === DONUT CHARTS === */
+.donut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.donut-card { text-align: center; }
+.donut-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: var(--navy-2);
+}
+.donut-card canvas { max-height: 260px; margin: 0 auto; }
+.donut-legend {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 12px; margin-top: 14px;
+}
+.donut-legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem;
+}
+.donut-legend-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.7);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+/* === WEALTH CHART === */
+.wealth-card { padding: 28px; }
+.wealth-card canvas { max-height: 400px; }
+
+/* === TABLE === */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 20px;
+  border: 1px solid rgba(212,175,106,0.2);
+  box-shadow: 0 4px 20px rgba(26,39,68,0.06);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+}
+.portfolio-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 1100px;
+}
+.portfolio-table thead {
+  background: linear-gradient(135deg, var(--navy-1), var(--navy-2));
+  color: var(--cream-1);
+}
+.portfolio-table th {
+  padding: 14px 10px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.3px;
+  text-align: left;
+  white-space: nowrap;
+  position: sticky; top: 0; z-index: 2;
+}
+.portfolio-table td {
+  padding: 11px 10px;
+  border-bottom: 1px solid rgba(212,175,106,0.1);
+  vertical-align: middle;
+}
+.portfolio-table tr.ask-row { background: rgba(168,196,160,0.12); }
+.portfolio-table tr.vps-row { background: rgba(250,246,238,0.5); }
+.portfolio-table tr:hover { background: rgba(184,212,232,0.15) !important; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 0.72rem; font-weight: 600;
+}
+.badge-green { background: rgba(168,196,160,0.3); color: var(--sage-2); }
+.badge-amber { background: rgba(212,175,106,0.25); color: var(--gold-2); }
+.badge-rose  { background: rgba(232,196,184,0.35); color: var(--rose-2); }
+.badge-moat-strong { color: var(--sage-2); font-weight: 700; }
+.badge-moat-moderate { color: var(--gold-2); }
+.price-up   { color: var(--sage-2); font-weight: 600; }
+.price-zone { color: var(--gold-2); font-weight: 600; }
+.price-down { color: var(--rose-2); font-weight: 600; }
+.check { color: var(--sage-2); font-size: 1.1rem; }
+.pillar-tag {
+  font-family: var(--font-accent);
+  font-size: 0.82rem;
+  color: var(--moonlight-2);
+}
+
+/* === PHASE TRACKER === */
+.phase-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.phase-card {
+  position: relative;
+  padding: 24px;
+  text-align: center;
+}
+.phase-card.active {
+  border: 2px solid var(--gold-1);
+  box-shadow: 0 0 25px rgba(212,175,106,0.2);
+}
+.phase-card.upcoming { opacity: 0.8; }
+.phase-card.future   { opacity: 0.55; }
+.phase-card .phase-label {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy-1);
+  margin-bottom: 4px;
+}
+.phase-card .phase-months {
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  color: var(--gold-2);
+  margin-bottom: 6px;
+}
+.phase-card .phase-focus {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--moonlight-2);
+  margin-bottom: 10px;
+}
+.phase-card .phase-positions {
+  font-size: 0.8rem;
+  color: var(--navy-2);
+  line-height: 1.5;
+}
+.phase-status {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.phase-status.active-s  { background: var(--sage-1); color: #fff; }
+.phase-status.upcoming-s { background: var(--moonlight-1); color: var(--navy-1); }
+.phase-status.future-s  { background: var(--cream-2); color: var(--navy-2); }
+
+/* === ACCOUNT CARDS === */
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+.account-card { padding: 28px; }
+.account-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+  color: var(--navy-1);
+}
+.account-card .detail {
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  line-height: 1.55;
+}
+.account-card .detail strong {
+  color: var(--navy-1);
+}
+.account-card .highlight {
+  background: linear-gradient(135deg, rgba(212,175,106,0.12), rgba(168,196,160,0.1));
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--navy-2);
+  border-left: 3px solid var(--gold-1);
+}
+
+/* === STRATEGY CAROUSEL === */
+.carousel-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 4px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-1) transparent;
+}
+.carousel-track::-webkit-scrollbar { height: 6px; }
+.carousel-track::-webkit-scrollbar-thumb { background: var(--gold-1); border-radius: 3px; }
+.strategy-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  text-align: center;
+  padding: 28px 20px;
+}
+.strategy-card .rule-num {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--gold-1);
+  opacity: 0.6;
+  line-height: 1;
+}
+.strategy-card .rule-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy-1);
+  margin: 8px 0 6px;
+}
+.strategy-card .rule-desc {
+  font-size: 0.84rem;
+  color: var(--navy-2);
+  line-height: 1.5;
+}
+
+/* === FOOTER === */
+.footer {
+  text-align: center;
+  margin-top: 48px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(26,39,68,0.04), rgba(212,175,106,0.08));
+  border-radius: 20px;
+  border: 1px solid rgba(212,175,106,0.15);
+}
+.footer p {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--navy-2);
+  line-height: 1.6;
+  font-style: italic;
+}
+.footer .star { color: var(--gold-1); }
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .dashboard { padding: 16px 12px 40px; }
+  .header { padding: 24px 12px 20px; }
+  .header-actions { position: relative; top: 0; right: 0; align-items: center; margin-top: 12px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .donut-grid { grid-template-columns: 1fr; }
+  .phase-timeline { grid-template-columns: 1fr; }
+  .account-grid { grid-template-columns: 1fr; }
+  .card { padding: 16px; border-radius: 16px; }
+  .strategy-card { flex: 0 0 240px; }
+  .section-title { margin: 32px 0 16px; }
+}
+@media (max-width: 480px) {
+  .summary-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sparkle particles -->
+<div class="sparkle-container" id="sparkles"></div>
+
+<div class="dashboard">
+
+  <!-- SECTION 1: HEADER -->
+  <header class="header">
+    <h1><span class="star">&#10022;</span> My Investment Portfolio <span class="star">&#10022;</span></h1>
+    <p class="subtitle">NOK 20,000/month &middot; 20&ndash;30 Year Horizon &middot; Goldman Sachs Framework</p>
+    <div class="date-scroll" id="dateScroll"></div>
+    <div class="header-actions">
+      <span class="last-updated" id="lastUpdated">Last updated: &mdash;</span>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshPrices()">&#x1FA84; Refresh Prices</button>
+    </div>
+  </header>
+
+  <!-- Warning banner -->
+  <div class="warning-banner" id="warningBanner"></div>
+
+  <!-- SECTION 2: SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="card summary-card glow" style="animation-delay:0.1s">
+      <span class="icon">&#x1F4B0;</span>
+      <div class="label">Total Invested to Date</div>
+      <div class="value" id="totalInvested">NOK 0</div>
+      <div class="sub" id="monthsInvested">Starting May 2026</div>
+    </div>
+    <div class="card summary-card glow" style="animation-delay:0.2s">
+      <span class="icon">&#x1F3F0;</span>
+      <div class="label">Portfolio Value</div>
+      <div class="value" id="portfolioValue">Loading...</div>
+      <div class="sub" id="portfolioChange"></div>
+    </div>
+    <div class="card summary-card" style="animation-delay:0.3s">
+      <span class="icon">&#x2728;</span>
+      <div class="label">Monthly Investment</div>
+      <div class="value">NOK 20,000</div>
+      <div class="sub">Systematic &middot; Every Month</div>
+    </div>
+    <div class="card summary-card" style="animation-delay:0.4s">
+      <span class="icon">&#x2B50;</span>
+      <div class="label">Active Positions</div>
+      <div class="value">16 Stocks</div>
+      <div class="sub">Across 10 Sectors</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: DONUT CHARTS -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Asset Allocation <span class="accent">&#10022;</span></h2>
+  <div class="donut-grid">
+    <div class="card donut-card">
+      <h3>By Investment Pillar</h3>
+      <canvas id="pillarChart"></canvas>
+      <div class="donut-legend">
+        <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#7BA7C7"></span>Core Compounders 60%</div>
+        <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#D4AF6A"></span>Thematic Growth 33%</div>
+        <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#A8C4A0"></span>Defensive Anchor 7%</div>
+      </div>
+    </div>
+    <div class="card donut-card">
+      <h3>By Account Type</h3>
+      <canvas id="accountChart"></canvas>
+      <div class="donut-legend">
+        <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#8BAF82"></span>ASK (Tax-Deferred) 33%</div>
+        <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#B8D4E8"></span>VPS (Taxable) 67%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: WEALTH PROJECTION -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Wealth Projection <span class="accent">&#10022;</span></h2>
+  <div class="card wealth-card">
+    <canvas id="wealthChart"></canvas>
+  </div>
+
+  <!-- SECTION 5: PORTFOLIO TABLE -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Portfolio Holdings <span class="accent">&#10022;</span></h2>
+  <div class="table-wrapper">
+    <table class="portfolio-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>Sector</th>
+          <th>Account</th>
+          <th>Alloc %</th>
+          <th>NOK/Mo</th>
+          <th>Live Price</th>
+          <th>Risk</th>
+          <th>Moat</th>
+          <th>Div %</th>
+          <th>Bull Target</th>
+          <th>Stop Loss</th>
+          <th>ASK</th>
+          <th>Pillar</th>
+        </tr>
+      </thead>
+      <tbody id="portfolioBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 6: DEPLOYMENT PHASES -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Deployment Timeline <span class="accent">&#10022;</span></h2>
+  <div class="phase-timeline">
+    <div class="card phase-card active">
+      <span class="phase-status active-s">ACTIVE</span>
+      <div class="phase-label">Phase 1</div>
+      <div class="phase-months">May &ndash; Aug 2026</div>
+      <div class="phase-focus">Defensive Core</div>
+      <div class="phase-positions">JNJ, BRK.B, NOVO-B, V, MSFT</div>
+    </div>
+    <div class="card phase-card upcoming">
+      <span class="phase-status upcoming-s">UPCOMING</span>
+      <div class="phase-label">Phase 2</div>
+      <div class="phase-months">Sep &ndash; Dec 2026</div>
+      <div class="phase-focus">Growth Layer</div>
+      <div class="phase-positions">AVGO, SE.PA, IHG, COP, GLNG, NEE, GEV, LMT</div>
+    </div>
+    <div class="card phase-card future">
+      <span class="phase-status future-s">FUTURE</span>
+      <div class="phase-label">Phase 3</div>
+      <div class="phase-months">Jan 2027+</div>
+      <div class="phase-focus">Full Deployment</div>
+      <div class="phase-positions">All 16 positions at steady-state allocations</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: ACCOUNT STRUCTURE -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Account Structure <span class="accent">&#10022;</span></h2>
+  <div class="account-grid">
+    <div class="card account-card">
+      <h3>&#x1F33F; ASK Account &mdash; Tax-Deferred</h3>
+      <div class="detail"><strong>Positions:</strong> NOVO-B, SE.PA, IHG, KOG.OL</div>
+      <div class="detail"><strong>Monthly:</strong> NOK 6,600</div>
+      <div class="detail"><strong>Tax Treatment:</strong> Gains &amp; dividends compound tax-free until withdrawal</div>
+      <div class="highlight">&#10022; 48% more terminal wealth vs taxable at 25 years</div>
+    </div>
+    <div class="card account-card">
+      <h3>&#x1F4CB; VPS Taxable Account</h3>
+      <div class="detail"><strong>Positions:</strong> 12 US/non-EEA stocks</div>
+      <div class="detail"><strong>Monthly:</strong> NOK 13,400</div>
+      <div class="detail"><strong>Tax Treatment:</strong> 37.84% on gains at realisation</div>
+      <div class="highlight">&#10022; Consider Storebrand Global Indeks in ASK for indirect US exposure</div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: STRATEGY RULES -->
+  <h2 class="section-title"><span class="accent">&#10022;</span> Strategy Rules <span class="accent">&#10022;</span></h2>
+  <div class="carousel-track">
+    <div class="card strategy-card">
+      <div class="rule-num">1</div>
+      <div class="rule-title">&#10022; Tax First</div>
+      <div class="rule-desc">Maximise ASK for EEA stocks. Tax-free compounding is the single highest-impact structural advantage.</div>
+    </div>
+    <div class="card strategy-card">
+      <div class="rule-num">2</div>
+      <div class="rule-title">&#10022; Diversify</div>
+      <div class="rule-desc">Portfolio offsets concentrated tech carry stake. Balanced across sectors, geographies, and currencies.</div>
+    </div>
+    <div class="card strategy-card">
+      <div class="rule-num">3</div>
+      <div class="rule-title">&#10022; Systematic</div>
+      <div class="rule-desc">NOK 20,000 every month, no exceptions. Dollar-cost averaging removes emotion from the equation.</div>
+    </div>
+    <div class="card strategy-card">
+      <div class="rule-num">4</div>
+      <div class="rule-title">&#10022; Three Pillars</div>
+      <div class="rule-desc">60% Core Compounders, 25% Thematic Growth, 15% Defensive Anchor. Rebalance quarterly.</div>
+    </div>
+    <div class="card strategy-card">
+      <div class="rule-num">5</div>
+      <div class="rule-title">&#10022; Patient</div>
+      <div class="rule-desc">20&ndash;30 year horizon. Quarterly review only. Time in market beats timing the market.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: FOOTER -->
+  <footer class="footer">
+    <p><span class="star">&#10022;</span> This dashboard is for personal monitoring only. Not licensed financial advice. Consult a Finanstilsynet-regulated advisor before making investment decisions. <span class="star">&#10022;</span></p>
+  </footer>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// PORTFOLIO DATA
+// ═══════════════════════════════════════════════
+const PORTFOLIO = [
+  { ticker:"NOVO-B.CO", displayTicker:"NOVO-B", name:"Novo Nordisk", sector:"Healthcare", account:"ASK", pillar:"Core", allocation:0.12, monthlyNOK:2400, risk:4, moat:"Strong", dividendYield:0.0162, currency:"DKK", entryZone:"DKK 590-645", stopLoss:"DKK 540", bullTarget:"DKK 820", askEligible:true, fallbackPrice:620 },
+  { ticker:"SU.PA", displayTicker:"SE.PA", name:"Schneider Electric", sector:"Industrials", account:"ASK", pillar:"Core", allocation:0.10, monthlyNOK:2000, risk:4, moat:"Strong", dividendYield:0.009, currency:"EUR", entryZone:"EUR 220-248", stopLoss:"EUR 198", bullTarget:"EUR 310", askEligible:true, fallbackPrice:235 },
+  { ticker:"IHG.L", displayTicker:"IHG", name:"InterContinental Hotels", sector:"Consumer Disc.", account:"ASK", pillar:"Core", allocation:0.07, monthlyNOK:1400, risk:5, moat:"Moderate", dividendYield:0.0155, currency:"GBP", entryZone:"GBP 88-99", stopLoss:"GBP 79", bullTarget:"GBP 130", askEligible:true, fallbackPrice:95 },
+  { ticker:"KOG.OL", displayTicker:"KOG.OL", name:"Kongsberg Gruppen", sector:"Defense (NO)", account:"ASK", pillar:"Thematic", allocation:0.04, monthlyNOK:800, risk:4, moat:"Strong", dividendYield:0.011, currency:"NOK", entryZone:"NOK 1100-1200", stopLoss:"NOK 980", bullTarget:"NOK 1600", askEligible:true, fallbackPrice:1150 },
+  { ticker:"MSFT", displayTicker:"MSFT", name:"Microsoft", sector:"Technology", account:"VPS Taxable", pillar:"Core", allocation:0.10, monthlyNOK:2000, risk:3, moat:"Strong", dividendYield:0.0072, currency:"USD", entryZone:"$395-420", stopLoss:"$368", bullTarget:"$540", askEligible:false, fallbackPrice:415 },
+  { ticker:"V", displayTicker:"V", name:"Visa Inc.", sector:"Financials", account:"VPS Taxable", pillar:"Core", allocation:0.08, monthlyNOK:1600, risk:3, moat:"Strong", dividendYield:0.0083, currency:"USD", entryZone:"$285-308", stopLoss:"$258", bullTarget:"$365", askEligible:false, fallbackPrice:298 },
+  { ticker:"BRK-B", displayTicker:"BRK.B", name:"Berkshire Hathaway B", sector:"Diversified", account:"VPS Taxable", pillar:"Core", allocation:0.08, monthlyNOK:1600, risk:2, moat:"Strong", dividendYield:0, currency:"USD", entryZone:"$470-498", stopLoss:"$430", bullTarget:"$600", askEligible:false, fallbackPrice:488 },
+  { ticker:"JNJ", displayTicker:"JNJ", name:"Johnson & Johnson", sector:"Healthcare", account:"VPS Taxable", pillar:"Defensive", allocation:0.07, monthlyNOK:1400, risk:2, moat:"Strong", dividendYield:0.021, currency:"USD", entryZone:"$150-163", stopLoss:"$143", bullTarget:"$195", askEligible:false, fallbackPrice:158 },
+  { ticker:"AVGO", displayTicker:"AVGO", name:"Broadcom Inc.", sector:"Semiconductors", account:"VPS Taxable", pillar:"Core", allocation:0.06, monthlyNOK:1200, risk:5, moat:"Strong", dividendYield:0.0185, currency:"USD", entryZone:"$175-195", stopLoss:"$153", bullTarget:"$260", askEligible:false, fallbackPrice:185 },
+  { ticker:"COP", displayTicker:"COP", name:"ConocoPhillips", sector:"Energy", account:"VPS Taxable", pillar:"Core", allocation:0.05, monthlyNOK:1000, risk:5, moat:"Moderate", dividendYield:0.023, currency:"USD", entryZone:"$98-108", stopLoss:"$84", bullTarget:"$145", askEligible:false, fallbackPrice:104 },
+  { ticker:"GLNG", displayTicker:"GLNG", name:"Golar LNG", sector:"Energy Infra.", account:"VPS Taxable", pillar:"Core", allocation:0.04, monthlyNOK:800, risk:6, moat:"Moderate", dividendYield:0.0243, currency:"USD", entryZone:"$44-52", stopLoss:"$37", bullTarget:"$84", askEligible:false, fallbackPrice:48.5 },
+  { ticker:"NEE", displayTicker:"NEE", name:"NextEra Energy", sector:"Clean Energy", account:"VPS Taxable", pillar:"Thematic", allocation:0.05, monthlyNOK:1000, risk:3, moat:"Strong", dividendYield:0.028, currency:"USD", entryZone:"$60-68", stopLoss:"$54", bullTarget:"$90", askEligible:false, fallbackPrice:64 },
+  { ticker:"GEV", displayTicker:"GEV", name:"GE Vernova", sector:"Grid Infra.", account:"VPS Taxable", pillar:"Thematic", allocation:0.04, monthlyNOK:800, risk:4, moat:"Strong", dividendYield:0, currency:"USD", entryZone:"$290-340", stopLoss:"$268", bullTarget:"$450", askEligible:false, fallbackPrice:315 },
+  { ticker:"CCJ", displayTicker:"CCJ", name:"Cameco Corporation", sector:"Nuclear/Uranium", account:"VPS Taxable", pillar:"Thematic", allocation:0.03, monthlyNOK:600, risk:5, moat:"Moderate", dividendYield:0.002, currency:"USD", entryZone:"$44-52", stopLoss:"$38", bullTarget:"$72", askEligible:false, fallbackPrice:48 },
+  { ticker:"LMT", displayTicker:"LMT", name:"Lockheed Martin", sector:"Defense", account:"VPS Taxable", pillar:"Thematic", allocation:0.04, monthlyNOK:800, risk:3, moat:"Strong", dividendYield:0.027, currency:"USD", entryZone:"$450-490", stopLoss:"$420", bullTarget:"$600", askEligible:false, fallbackPrice:468 },
+  { ticker:"RTX", displayTicker:"RTX", name:"RTX Corporation", sector:"Defense", account:"VPS Taxable", pillar:"Thematic", allocation:0.03, monthlyNOK:600, risk:3, moat:"Strong", dividendYield:0.023, currency:"USD", entryZone:"$115-130", stopLoss:"$105", bullTarget:"$170", askEligible:false, fallbackPrice:122 }
+];
+
+const WEALTH_DATA = {
+  years:        [1, 2, 3, 5, 7, 10, 15, 20, 25, 30],
+  ages:         [33, 34, 35, 37, 39, 42, 47, 52, 57, 62],
+  invested:     [240000,480000,720000,1200000,1680000,2400000,3600000,4800000,6000000,7200000],
+  conservative: [248999,518664,810711,1469537,2242266,3658921,6920764,11780408,19020528,29807189],
+  baseCase:     [251311,528938,835636,1548741,2419008,4096900,8289407,15187377,26536668,45209758],
+  optimistic:   [253650,539469,861538,1633393,2613445,4600774,9991604,19785107,37576933,69899283]
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let livePrices = {};
+let pricesLive = false;
+
+// ═══════════════════════════════════════════════
+// SPARKLE PARTICLES
+// ═══════════════════════════════════════════════
+(function createSparkles() {
+  const container = document.getElementById('sparkles');
+  const symbols = ['&#10022;','&#10023;','&#9733;','&#10024;'];
+  for (let i = 0; i < 25; i++) {
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.innerHTML = symbols[Math.floor(Math.random()*symbols.length)];
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = (100 + Math.random()*20) + '%';
+    s.style.fontSize = (10 + Math.random()*12) + 'px';
+    s.style.animationDuration = (8 + Math.random()*14) + 's';
+    s.style.animationDelay = (Math.random()*12) + 's';
+    container.appendChild(s);
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// DATE
+// ═══════════════════════════════════════════════
+function setDate() {
+  const now = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('dateScroll').textContent = now.toLocaleDateString('en-GB', opts);
+}
+setDate();
+
+// ═══════════════════════════════════════════════
+// INVESTMENT CALCULATIONS
+// ═══════════════════════════════════════════════
+function calcTotalInvested() {
+  const start = new Date(2026, 4, 1); // May 2026
+  const now = new Date();
+  if (now < start) {
+    document.getElementById('totalInvested').textContent = 'NOK 0';
+    document.getElementById('monthsInvested').textContent = 'Starting May 2026';
+    return 0;
+  }
+  let months = (now.getFullYear()-start.getFullYear())*12 + (now.getMonth()-start.getMonth()) + 1;
+  if (months < 1) months = 1;
+  const total = months * 20000;
+  document.getElementById('totalInvested').textContent = 'NOK ' + total.toLocaleString('en');
+  document.getElementById('monthsInvested').textContent = months + ' month' + (months!==1?'s':'') + ' invested';
+  return total;
+}
+
+// ═══════════════════════════════════════════════
+// PRICE FETCHING
+// ═══════════════════════════════════════════════
+async function fetchPrice(ticker) {
+  // Try Yahoo via allorigins
+  try {
+    const yUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(ticker) + '?interval=1d&range=1d';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(yUrl);
+    const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      if (price && price > 0) return price;
+    }
+  } catch(e) {}
+
+  // Try corsproxy.io
+  try {
+    const yUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(ticker) + '?interval=1d&range=1d';
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(yUrl);
+    const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      if (price && price > 0) return price;
+    }
+  } catch(e) {}
+
+  return null;
+}
+
+async function fetchAllPrices() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('loading');
+  btn.textContent = '... Fetching ...';
+
+  let successes = 0;
+  const promises = PORTFOLIO.map(async (pos) => {
+    const price = await fetchPrice(pos.ticker);
+    if (price !== null) {
+      livePrices[pos.ticker] = price;
+      successes++;
+    } else if (!livePrices[pos.ticker]) {
+      livePrices[pos.ticker] = pos.fallbackPrice;
+    }
+  });
+
+  await Promise.all(promises);
+
+  pricesLive = successes > 0;
+  const banner = document.getElementById('warningBanner');
+  if (successes === 0) {
+    banner.innerHTML = '\u26A0\uFE0F Live prices unavailable. Showing reference prices from March 2026.';
+    banner.classList.add('show');
+  } else if (successes < PORTFOLIO.length) {
+    banner.innerHTML = '\u26A0\uFE0F Partial live data (' + successes + '/' + PORTFOLIO.length + '). Some prices are reference estimates.';
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+
+  const now = new Date();
+  document.getElementById('lastUpdated').textContent = 'Last updated: ' + now.toLocaleTimeString();
+  btn.classList.remove('loading');
+  btn.innerHTML = '&#x1FA84; Refresh Prices';
+
+  updatePortfolioValue();
+  renderTable();
+}
+
+function refreshPrices() { fetchAllPrices(); }
+
+function updatePortfolioValue() {
+  // Simplified: assume we buy at fallback prices, show current value based on live
+  // Since we're pre-start, just show a reference value
+  const totalInvested = calcTotalInvested();
+  if (totalInvested === 0) {
+    document.getElementById('portfolioValue').textContent = 'Pre-Launch';
+    document.getElementById('portfolioChange').textContent = 'Begins May 2026';
+    return;
+  }
+  // Basic estimate: invested + hypothetical gains
+  document.getElementById('portfolioValue').textContent = 'NOK ' + totalInvested.toLocaleString('en');
+  document.getElementById('portfolioChange').textContent = 'Based on monthly DCA';
+}
+
+// ═══════════════════════════════════════════════
+// TABLE
+// ═══════════════════════════════════════════════
+function parseEntryNumbers(zone) {
+  const nums = zone.match(/[\d,.]+/g);
+  if (!nums || nums.length < 2) return null;
+  return { low: parseFloat(nums[0].replace(',','')), high: parseFloat(nums[1].replace(',','')) };
+}
+function parseStopLoss(sl) {
+  const m = sl.match(/[\d,.]+/);
+  return m ? parseFloat(m[0].replace(',','')) : null;
+}
+
+function renderTable() {
+  const tbody = document.getElementById('portfolioBody');
+  tbody.innerHTML = '';
+  PORTFOLIO.forEach(pos => {
+    const tr = document.createElement('tr');
+    tr.className = pos.account === 'ASK' ? 'ask-row' : 'vps-row';
+
+    const price = livePrices[pos.ticker] || pos.fallbackPrice;
+    const entry = parseEntryNumbers(pos.entryZone);
+    const stop = parseStopLoss(pos.stopLoss);
+
+    let priceClass = 'price-zone', priceArrow = '\u2192';
+    if (entry && price > entry.high) { priceClass = 'price-up'; priceArrow = '\u2191'; }
+    else if (stop && price < stop) { priceClass = 'price-down'; priceArrow = '\u2193'; }
+    else if (entry && price >= entry.low && price <= entry.high) { priceClass = 'price-zone'; priceArrow = '\u2192'; }
+    else if (entry && price < entry.low && (!stop || price >= stop)) { priceClass = 'price-zone'; priceArrow = '\u2192'; }
+
+    let riskBadge = 'badge-green';
+    if (pos.risk >= 5) riskBadge = 'badge-rose';
+    else if (pos.risk >= 3) riskBadge = 'badge-amber';
+
+    const sym = pos.currency === 'USD' ? '$' : pos.currency === 'EUR' ? '\u20AC' : pos.currency === 'GBP' ? '\u00A3' : pos.currency === 'DKK' ? 'DKK ' : pos.currency === 'NOK' ? 'NOK ' : '';
+
+    tr.innerHTML = `
+      <td><strong>${pos.displayTicker}</strong></td>
+      <td>${pos.name}</td>
+      <td>${pos.sector}</td>
+      <td>${pos.account}</td>
+      <td>${(pos.allocation*100).toFixed(0)}%</td>
+      <td>${pos.monthlyNOK.toLocaleString('en')}</td>
+      <td class="${priceClass}">${priceArrow} ${sym}${price.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td><span class="badge ${riskBadge}">${pos.risk}/10</span></td>
+      <td class="${pos.moat==='Strong'?'badge-moat-strong':'badge-moat-moderate'}">${pos.moat}</td>
+      <td>${pos.dividendYield>0?(pos.dividendYield*100).toFixed(1)+'%':'\u2014'}</td>
+      <td>${pos.bullTarget}</td>
+      <td>${pos.stopLoss}</td>
+      <td>${pos.askEligible?'<span class="check">\u2714</span>':''}</td>
+      <td><span class="pillar-tag">${pos.pillar}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: true,
+};
+
+function createPillarChart() {
+  const ctx = document.getElementById('pillarChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Core Compounders', 'Thematic Growth', 'Defensive Anchor'],
+      datasets: [{
+        data: [60, 33, 7],
+        backgroundColor: [
+          'rgba(123,167,199,0.8)',
+          'rgba(212,175,106,0.8)',
+          'rgba(168,196,160,0.8)'
+        ],
+        borderColor: [
+          'rgba(123,167,199,1)',
+          'rgba(212,175,106,1)',
+          'rgba(168,196,160,1)'
+        ],
+        borderWidth: 2,
+        hoverOffset: 12,
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      cutout: '58%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(26,39,68,0.9)',
+          titleFont: { family: "'Playfair Display', serif" },
+          bodyFont: { family: "'Lora', serif" },
+          padding: 12,
+          cornerRadius: 10,
+        }
+      }
+    }
+  });
+}
+
+function createAccountChart() {
+  const ctx = document.getElementById('accountChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['ASK (Tax-Deferred EEA) — NOK 6,600/mo', 'VPS (Taxable US) — NOK 13,400/mo'],
+      datasets: [{
+        data: [33, 67],
+        backgroundColor: [
+          'rgba(139,175,130,0.8)',
+          'rgba(184,212,232,0.8)'
+        ],
+        borderColor: [
+          'rgba(139,175,130,1)',
+          'rgba(184,212,232,1)'
+        ],
+        borderWidth: 2,
+        hoverOffset: 12,
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      cutout: '58%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(26,39,68,0.9)',
+          titleFont: { family: "'Playfair Display', serif" },
+          bodyFont: { family: "'Lora', serif" },
+          padding: 12,
+          cornerRadius: 10,
+        }
+      }
+    }
+  });
+}
+
+function formatNOK(val) {
+  if (val >= 1000000) return 'NOK ' + (val/1000000).toFixed(1) + 'M';
+  if (val >= 1000) return 'NOK ' + (val/1000).toFixed(0) + 'K';
+  return 'NOK ' + val;
+}
+
+function createWealthChart() {
+  const ctx = document.getElementById('wealthChart').getContext('2d');
+  const d = WEALTH_DATA;
+  const labels = d.years.map((y,i) => 'Year ' + y + ' (Age ' + d.ages[i] + ')');
+
+  // Milestone annotations
+  const milestonePlugin = {
+    id: 'milestoneAnnotations',
+    afterDraw(chart) {
+      const { ctx: c, scales: { x, y } } = chart;
+      const milestones = [
+        { idx: 5, label: '\u2726 Age 42 \u2014 NOK 4.1M' },
+        { idx: 7, label: '\u2726 Age 52 \u2014 Financial Freedom' },
+        { idx: 9, label: '\u2726 Age 62 \u2014 NOK 45.2M' }
+      ];
+      c.save();
+      milestones.forEach(m => {
+        const xPos = x.getPixelForValue(m.idx);
+        const yPos = y.getPixelForValue(d.baseCase[m.idx]);
+        c.fillStyle = 'rgba(26,39,68,0.85)';
+        c.font = '600 11px "Lora", serif';
+        c.textAlign = 'center';
+        // Background pill
+        const tw = c.measureText(m.label).width + 16;
+        const th = 22;
+        const rx = xPos - tw/2;
+        const ry = yPos - th - 10;
+        c.beginPath();
+        c.roundRect(rx, ry, tw, th, 8);
+        c.fillStyle = 'rgba(250,246,238,0.92)';
+        c.fill();
+        c.strokeStyle = 'rgba(212,175,106,0.5)';
+        c.lineWidth = 1;
+        c.stroke();
+        c.fillStyle = 'rgba(26,39,68,0.85)';
+        c.fillText(m.label, xPos, ry + 15);
+      });
+      c.restore();
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Total Invested',
+          data: d.invested,
+          borderColor: 'rgba(245,237,218,1)',
+          backgroundColor: 'rgba(245,237,218,0.1)',
+          borderDash: [8, 4],
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: 'rgba(245,237,218,1)',
+          tension: 0.3,
+          fill: false,
+        },
+        {
+          label: 'Conservative (8% CAGR)',
+          data: d.conservative,
+          borderColor: 'rgba(168,196,160,1)',
+          backgroundColor: 'rgba(168,196,160,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: 'rgba(168,196,160,1)',
+          tension: 0.3,
+          fill: false,
+        },
+        {
+          label: 'Base Case (10% CAGR)',
+          data: d.baseCase,
+          borderColor: 'rgba(123,167,199,1)',
+          backgroundColor: 'rgba(123,167,199,0.12)',
+          borderWidth: 3.5,
+          pointRadius: 5,
+          pointBackgroundColor: 'rgba(123,167,199,1)',
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: 'Optimistic (12% CAGR)',
+          data: d.optimistic,
+          borderColor: 'rgba(212,175,106,1)',
+          backgroundColor: 'rgba(212,175,106,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: 'rgba(212,175,106,1)',
+          tension: 0.3,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      aspectRatio: window.innerWidth < 600 ? 1.2 : 2.2,
+      interaction: { intersect: false, mode: 'index' },
+      scales: {
+        y: {
+          ticks: {
+            callback: v => formatNOK(v),
+            font: { family: "'Lora', serif", size: 11 },
+            color: 'rgba(26,39,68,0.6)',
+          },
+          grid: { color: 'rgba(212,175,106,0.1)' },
+          border: { display: false },
+        },
+        x: {
+          ticks: {
+            font: { family: "'Lora', serif", size: 10 },
+            color: 'rgba(26,39,68,0.6)',
+            maxRotation: 45,
+          },
+          grid: { display: false },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            font: { family: "'Lora', serif", size: 12 },
+            color: 'rgba(26,39,68,0.7)',
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 20,
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(26,39,68,0.92)',
+          titleFont: { family: "'Playfair Display', serif", size: 13 },
+          bodyFont: { family: "'Lora', serif", size: 12 },
+          padding: 14,
+          cornerRadius: 12,
+          callbacks: {
+            label: item => item.dataset.label + ': ' + formatNOK(item.raw),
+          }
+        }
+      }
+    },
+    plugins: [milestonePlugin]
+  });
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+(async function init() {
+  calcTotalInvested();
+
+  // Set fallback prices first
+  PORTFOLIO.forEach(p => { livePrices[p.ticker] = p.fallbackPrice; });
+  renderTable();
+  updatePortfolioValue();
+
+  // Create charts
+  createPillarChart();
+  createAccountChart();
+  createWealthChart();
+
+  // Try to fetch live prices
+  await fetchAllPrices();
+})();
+</script>
+</body>
+</html>
